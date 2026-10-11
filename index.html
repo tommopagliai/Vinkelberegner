@@ -9,33 +9,58 @@
 <body class="bg-slate-900 text-white min-h-screen flex items-center justify-center p-4">
     <div class="bg-slate-800 p-8 rounded-2xl shadow-2xl w-full max-w-md border border-slate-700">
         <!-- Title at the very top -->
-        <h1 class="text-xl font-bold mb-6 text-center text-sky-400">Tilt angle of plane calculator</h1>
+        <h1 class="text-xl font-bold mb-4 text-center text-sky-400">Tilt angle of plane calculator</h1>
         
+        <!-- Picture / Illustration placed under the upper text and over the calculation part -->
+        <div class="mb-6 flex justify-center">
+            <svg class="w-48 h-28 text-sky-500" viewBox="0 0 200 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Horizon line -->
+                <line x1="10" y1="90" x2="190" y2="90" stroke="#475569" stroke-width="2" stroke-dasharray="4 4" />
+                <!-- Banking Aircraft Icon -->
+                <g transform="translate(100, 50) rotate(25)">
+                    <!-- Fuselage -->
+                    <ellipse cx="0" cy="0" rx="8" ry="35" fill="#38bdf8" />
+                    <!-- Wings -->
+                    <rect x="-45" y="-10" width="90" height="8" rx="3" fill="#0ea5e9" />
+                    <!-- Tail -->
+                    <polygon points="0,30 12,42 -12,42" fill="#0284c7" />
+                </g>
+                <!-- Angle Arc indicator -->
+                <path d="M 100 80 A 30 30 0 0 0 115 55" stroke="#f43f5e" stroke-width="2" fill="none" />
+                <text x="122" y="70" fill="#f43f5e" font-size="12" font-weight="bold">θ</text>
+            </svg>
+        </div>
+
         <!-- Error Message Box -->
         <div id="error-msg" class="hidden mb-4 p-3 bg-red-900/50 border border-red-500 text-red-200 text-sm rounded-lg text-center">
-            insert at least two of the parameters
+            Insert at least two of the parameters
         </div>
 
         <!-- 1. Tilt Angle Input -->
         <div class="mb-4">
             <label class="block text-sm font-medium mb-2 text-slate-300">Tilt Angle (degrees)</label>
-            <input type="number" id="angle" placeholder="Enter angle" class="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-sky-500" oninput="calculate()">
+            <input type="number" id="angle" placeholder="Enter angle" class="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-sky-500">
         </div>
 
         <!-- 2. Speed Input -->
         <div class="mb-4">
             <label class="block text-sm font-medium mb-2 text-slate-300">Speed (m/s)</label>
-            <input type="number" id="speed" placeholder="Enter speed" class="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-sky-500" oninput="calculate()">
+            <input type="number" id="speed" placeholder="Enter speed" class="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-sky-500">
         </div>
 
         <!-- 3. Turn Radius Input -->
         <div class="mb-6">
             <label class="block text-sm font-medium mb-2 text-slate-300">Turn Radius (meters)</label>
-            <input type="number" id="radius" placeholder="Enter radius" class="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-sky-500" oninput="calculate()">
+            <input type="number" id="radius" placeholder="Enter radius" class="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-sky-500">
         </div>
 
+        <!-- Calculate Button -->
+        <button onclick="calculate()" class="w-full bg-sky-500 hover:bg-sky-600 text-white font-semibold py-2.5 rounded-lg transition duration-200 shadow-lg mb-4">
+            Calculate
+        </button>
+
         <div class="text-center text-xs text-slate-500">
-            Provide any 2 values to calculate the 3rd ($g \approx 9.81\text{ m/s}^2$)
+            Provide any 2 values and click calculate to fill the 3rd ($g \approx 9.81\text{ m/s}^2$)
         </div>
     </div>
 
@@ -86,6 +111,12 @@
                     const R = (V * V) / (g * tanVal);
                     radiusInput.value = R.toFixed(2);
                 }
+            } else {
+                // If all 3 are filled, recalculate the angle as default
+                const V = parseFloat(speedInput.value);
+                const R = parseFloat(radiusInput.value);
+                const angleRad = Math.atan((V * V) / (g * R));
+                angleInput.value = (angleRad * (180 / Math.PI)).toFixed(2);
             }
         }
     </script>
