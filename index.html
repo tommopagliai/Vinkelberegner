@@ -1,45 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tilt angle of plane calculator</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-slate-900 text-white min-h-screen flex items-center justify-center p-4">
-    <div class="bg-slate-800 p-8 rounded-2xl shadow-2xl w-full max-w-md border border-slate-700">
-        <!-- Title at the very top -->
-        <h1 class="text-xl font-bold mb-6 text-center text-sky-400">Tilt angle of plane calculator</h1>
-        
-        <!-- Error Message Box -->
-        <div id="error-msg" class="hidden mb-4 p-3 bg-red-900/50 border border-red-500 text-red-200 text-sm rounded-lg text-center">
-            insert at least two of the parameters
-        </div>
-
-        <!-- 1. Tilt Angle Input -->
-        <div class="mb-4">
-            <label class="block text-sm font-medium mb-2 text-slate-300">Tilt Angle (degrees)</label>
-            <input type="number" id="angle" placeholder="Enter angle" class="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-sky-500" oninput="calculate()">
-        </div>
-
-        <!-- 2. Speed Input -->
-        <div class="mb-4">
-            <label class="block text-sm font-medium mb-2 text-slate-300">Speed (m/s)</label>
-            <input type="number" id="speed" placeholder="Enter speed" class="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-sky-500" oninput="calculate()">
-        </div>
-
-        <!-- 3. Turn Radius Input -->
-        <div class="mb-6">
-            <label class="block text-sm font-medium mb-2 text-slate-300">Turn Radius (meters)</label>
-            <input type="number" id="radius" placeholder="Enter radius" class="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-sky-500" oninput="calculate()">
-        </div>
-
-        <div class="text-center text-xs text-slate-500">
-            Provide any 2 values to calculate the 3rd ($g \approx 9.81\text{ m/s}^2$)
-        </div>
-    </div>
-
-    <script>
+<script>
         const g = 9.81;
 
         function calculate() {
@@ -61,36 +20,31 @@
                 errorBox.classList.add('hidden');
             }
 
-            // If all 3 are filled, we prioritize solving for the one the user didn't just type or solve based on the first two. 
-            // To make it smooth, let's calculate the missing/empty one if one is blank, or calculate angle/speed/radius based on which 2 are present.
-            
             if (!hasAngle && hasSpeed && hasRadius) {
-                // Calculate Angle: arctan(g * R / V^2)
-                const R = parseFloat(radiusInput.value);
+                // Corrected Angle: arctan(V^2 / (g * R))
                 const V = parseFloat(speedInput.value);
-                if (V !== 0) {
-                    const angleRad = Math.atan((g * R) / (V * V));
+                const R = parseFloat(radiusInput.value);
+                if (g * R !== 0) {
+                    const angleRad = Math.atan((V * V) / (g * R));
                     angleInput.value = (angleRad * (180 / Math.PI)).toFixed(2);
                 }
             } else if (!hasSpeed && hasAngle && hasRadius) {
-                // Calculate Speed: sqrt(g * R / tan(angle))
+                // Corrected Speed: sqrt(g * R * tan(angle))
                 const angleDeg = parseFloat(angleInput.value);
                 const R = parseFloat(radiusInput.value);
                 const angleRad = angleDeg * (Math.PI / 180);
-                const tanVal = Math.tan(angleRad);
-                if (tanVal > 0) {
-                    const V = Math.sqrt((g * R) / tanVal);
-                    speedInput.value = V.toFixed(2);
-                }
+                const V = Math.sqrt(g * R * Math.tan(angleRad));
+                speedInput.value = V.toFixed(2);
             } else if (!hasRadius && hasAngle && hasSpeed) {
-                // Calculate Radius: tan(angle) * V^2 / g
+                // Corrected Radius: V^2 / (g * tan(angle))
                 const angleDeg = parseFloat(angleInput.value);
                 const V = parseFloat(speedInput.value);
                 const angleRad = angleDeg * (Math.PI / 180);
-                const R = (Math.tan(angleRad) * (V * V)) / g;
-                radiusInput.value = R.toFixed(2);
+                const tanVal = Math.tan(angleRad);
+                if (tanVal !== 0) {
+                    const R = (V * V) / (g * tanVal);
+                    radiusInput.value = R.toFixed(2);
+                }
             }
         }
     </script>
-</body>
-</html>
