@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vinkelberegner</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white min-h-screen flex items-center justify-center">
+    <div class="bg-gray-800 p-8 rounded-2xl shadow-xl w-full max-w-md border border-gray-700">
+        <h1 class="text-2xl font-bold mb-6 text-center text-indigo-400">Vinkelberegner</h1>
+        
+        <!-- Grader til Radianer -->
+        <div class="mb-4">
+            <label class="block text-sm font-medium mb-2 text-gray-300">Grader (°)</label>
+            <input type="number" id="degrees" placeholder="Indtast grader" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-indigo-500" oninput="convertFromDegrees()">
+        </div>
+
+        <div class="mb-6">
+            <label class="block text-sm font-medium mb-2 text-gray-300">Radianer (rad)</label>
+            <input type="number" id="radians" placeholder="Indtast radianer" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-indigo-500" oninput="convertFromRadians()">
+        </div>
+
+        <div class="border-t border-gray-700 pt-4 text-sm text-gray-400 text-center">
+            <p>Hostet på GitHub Pages 🚀</p>
+        </div>
+    </div>
+
+    <script>
+        function convertFromDegrees() {
+            const deg = document.getElementById('degrees').value;
+            if (deg === '') {
+                document.getElementById('radians').value = '';
+                return;
+            }
+            const rad = (parseFloat(deg) * Math.PI) / 180;
+            document.getElementById('radians').value = rad.toFixed(4);
+        }
+
+        function convertFromRadians() {
+            const rad = document.getElementById('radians').value;
+            if (rad === '') {
+                document.getElementById('degrees').value = '';
+                return;
+            }
+            const deg = (parseFloat(rad) * 180) / Math.PI;
+            document.getElementById('degrees').value = deg.toFixed(2);
+        }
+    </script>
+</body>
+</html>
